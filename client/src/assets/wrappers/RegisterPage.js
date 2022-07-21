@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from "styled-components";
 
 const Wrapper = styled.section`
   display: grid;
@@ -9,7 +9,7 @@ const Wrapper = styled.section`
     margin-bottom: 1.38rem;
   }
   .form {
-    max-width: 400px;
+    max-width: 500px;
     border-top: 5px solid var(--primary-500);
   }
 
@@ -31,5 +31,5 @@ const Wrapper = styled.section`
     cursor: pointer;
     letter-spacing: var(--letterSpacing);
   }
-`
-export default Wrapper
+`;
+export default Wrapper;
