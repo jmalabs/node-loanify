@@ -1,9 +1,8 @@
-import React, { useState } from "react";
-import styled from "styled-components";
+import React, { useState, useEffect } from "react";
 import { Logo, FormRow, Alert } from "../components";
 import Wrapper from "../assets/wrappers/RegisterPage";
 import { useAppContext } from "../context/appContext";
-
+import { useNavigate } from "react-router-dom";
 const initialState = {
   name: "",
   email: "",
@@ -14,26 +13,62 @@ const initialState = {
 
 function Register() {
   const [values, setValues] = useState(initialState);
-
+  const navigate = useNavigate();
   const handleChange = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value });
   };
 
-  const { isLoading, showAlert, displayAlert } = useAppContext();
+  const { user, isLoading, showAlert, displayAlert, setupUser } =
+    useAppContext();
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
     const { email, name, password, isMember } = values;
 
-    if (!email || !name || !password || (!isMember && !name)) {
+    if (!email || !password || (!isMember && !name)) {
       displayAlert();
       return;
+    }
+
+    const currentUser = { name, email, password };
+
+    if (isMember) {
+      const result = await setupUser({
+        data: currentUser,
+        apiPath: "auth/login",
+        alertMessage: "Login Successful. Redirecting...",
+      });
+
+      if (user && result === true) {
+        setTimeout(() => {
+          navigate("/");
+        }, 3000);
+      }
+    } else {
+      const result = await setupUser({
+        data: currentUser,
+        apiPath: "auth/register",
+        alertMessage: "User Created Successfully. Please login.",
+      });
+
+      if (result === true) {
+        setValues({ ...values, isMember: true, email: "", password: "" });
+      }
     }
   };
 
   const toggleMember = () => {
     setValues({ ...values, isMember: !values.isMember });
   };
+
+  // useEffect(() => {
+  //   console.log("Login", user);
+  //   if (user && values.isMember) {
+  //     setTimeout(() => {
+  //       navigate("/");
+  //     }, 3000);
+  //   }
+  // }, [user, navigate, values.isMember]);
 
   return (
     <Wrapper>
@@ -62,8 +97,12 @@ function Register() {
           handleChange={handleChange}
           value={values.password}
         />
-        <button type="submit" className="btn btn-block" onClick={onSubmit}>
-          Submit
+        <button
+          type="submit"
+          className="btn btn-block"
+          onClick={onSubmit}
+          disabled={isLoading}>
+          {values.isMember ? "Login" : "Register"}
         </button>
         <p>
           {values.isMember ? "Not a member yet" : "Already a member?"}
@@ -76,29 +115,4 @@ function Register() {
   );
 }
 
-// const Wrapper = styled.div`
-//   form {
-//     width: 400px;
-//     border-top: 5px solid var(--primary-500);
-//     padding: 2rem 2.5rem;
-//     margin: 3rem auto;
-//     background: var(--white);
-//     border-radius: var(--borderRadius);
-//     box-shadow: var(--shadow-2);
-//     max-width: 400px;
-
-//     .logo {
-//       margin: 0 auto;
-//       display: block;
-//     }
-
-//     h3 {
-//       text-align: center;
-//     }
-
-//     input {
-//       padding: 1rem;
-//     }
-//   }
-// `;
 export default Register;

@@ -2,13 +2,18 @@ import express from "express";
 import connectDB from "./db/connect.js";
 import errorHandlerMiddleware from "./middleware/error-handler.js";
 import notFoundMiddleware from "./middleware/not-found.js";
-
 import "express-async-errors";
 import authRouter from "./routes/authRoutes.js";
 import jobsRouter from "./routes/jobRoutes.js";
+import cors from "cors";
+import morgan from "morgan";
 
 const app = express();
 
+if (process.env.NODE_ENV !== "production") {
+  app.use(morgan("dev"));
+}
+app.use(cors());
 app.use(express.json());
 
 app.get("/", (req, res) => {

@@ -52,4 +52,8 @@ UserSchema.methods.createJWT = function () {
   });
 };
 
+UserSchema.methods.comparePassword = async function (password) {
+  return await bcrypjs.compare(password, this.password);
+};
+
 export default mongoose.model("User", UserSchema);

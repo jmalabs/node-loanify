@@ -1,7 +1,6 @@
 import User from "../models/User.js";
 import { StatusCodes } from "http-status-codes";
 import { BadRequestError, NotAuthorizedError } from "../Errors/index.js";
-import bcrypt from "bcryptjs";
 
 const register = async (req, res) => {
   const { name, email, password } = req.body;
@@ -21,15 +20,15 @@ const register = async (req, res) => {
 };
 
 const login = async (req, res) => {
-  const user = await User.findOne({ email: req.body.email });
+  const { email, password } = req.body;
+  const user = await User.findOne({ email });
   if (!user) {
     throw new NotAuthorizedError("Login failed!");
   }
 
-  const result = await bcrypt.compare(req.body.password, user.password);
+  const result = await user.comparePassword(password);
   if (result === true) {
     const token = await user.createJWT();
-
     return res.status(200).json({
       user: { name: user.name, email: user.email, lastName: user.lastName },
       token,
