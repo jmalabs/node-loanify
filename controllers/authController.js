@@ -22,7 +22,6 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
   const user = await User.findOne({ email: req.body.email });
-
   if (!user) {
     throw new NotAuthorizedError("Login failed!");
   }
@@ -30,7 +29,8 @@ const login = async (req, res) => {
   const result = await bcrypt.compare(req.body.password, user.password);
   if (result === true) {
     const token = await user.createJWT();
-    res.json({
+
+    return res.status(200).json({
       user: { name: user.name, email: user.email, lastName: user.lastName },
       token,
     });
