@@ -37,9 +37,10 @@ function Register() {
         data: currentUser,
         apiPath: "auth/login",
         alertMessage: "Login Successful. Redirecting...",
+        isRegister: false,
       });
 
-      if (user && result === true) {
+      if (result === true) {
         setTimeout(() => {
           navigate("/");
         }, 3000);
@@ -49,6 +50,7 @@ function Register() {
         data: currentUser,
         apiPath: "auth/register",
         alertMessage: "User Created Successfully. Please login.",
+        isRegister: true,
       });
 
       if (result === true) {

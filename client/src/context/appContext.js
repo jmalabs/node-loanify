@@ -6,6 +6,8 @@ import {
   SETUP_USER_BEGIN,
   SETUP_USER_SUCCESS,
   SETUP_USER_ERROR,
+  TOGGLE_SIDEBAR,
+  LOGOUT_USER,
 } from "./actions";
 
 import { Post } from "../utils/api-util.js";
@@ -22,6 +24,7 @@ export const initialState = {
   token: token || null,
   userLocation: location || "",
   jobLocation: location || "",
+  showSidebar: true,
 };
 
 const AppContext = React.createContext();
@@ -36,13 +39,15 @@ const AppProvider = ({ children }) => {
     try {
       const response = await Post({ path: apiPath, data });
       // const { user, token, location } = response.data;
-      const user = response.data;
+      const user = response.data.user;
       dispatch({
         type: SETUP_USER_SUCCESS,
         payload: { user, alertMessage },
       });
 
+      console.log("isRegister", isRegister);
       if (isRegister === false) {
+        console.log("addUserToLocalStorage");
         addUserToLocalStorage({ user });
       }
 
@@ -72,6 +77,16 @@ const AppProvider = ({ children }) => {
     }, 3000);
   };
 
+  const logoutUser = () => {
+    dispatch({ type: LOGOUT_USER });
+    removeUserToLocalStorage();
+  };
+
+  const toggleSidebar = () => {
+    console.log("toggleSidebar", state.showSidebar);
+    dispatch({ type: TOGGLE_SIDEBAR });
+  };
+
   // Add user to localStorage.
   const addUserToLocalStorage = ({ user, token, location }) => {
     localStorage.setItem("user", JSON.stringify(user));
@@ -87,7 +102,15 @@ const AppProvider = ({ children }) => {
   };
 
   return (
-    <AppContext.Provider value={{ ...state, displayAlert, setupUser }}>
+    <AppContext.Provider
+      value={{
+        ...state,
+        displayAlert,
+        setupUser,
+        toggleSidebar,
+        showSidebar: state.showSidebar,
+        logoutUser,
+      }}>
       {children}
     </AppContext.Provider>
   );
