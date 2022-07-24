@@ -60,7 +60,6 @@ const reducer = (state, action) => {
     };
   }
   if (action.type === TOGGLE_SIDEBAR) {
-    console.log("TOGGLE_SIDEBAR", state);
     return {
       ...state,
       showSidebar: !state.showSidebar,

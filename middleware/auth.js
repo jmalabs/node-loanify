@@ -3,7 +3,6 @@ import { NotAuthorizedError } from "../Errors/index.js";
 
 const auth = (req, _, next) => {
   const authHeader = req.headers.authorization;
-  console.log("req", authHeader);
   if (!authHeader) {
     throw new NotAuthorizedError(
       "You do not have access to the requested resource!"
@@ -17,7 +16,6 @@ const auth = (req, _, next) => {
 
     next();
   } catch (error) {
-    console.log(error);
     throw new NotAuthorizedError(
       "You do not have access to the requested resource!"
     );

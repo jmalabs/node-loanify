@@ -10,7 +10,7 @@ import {
   LOGOUT_USER,
 } from "./actions";
 
-import { Post } from "../utils/api-util.js";
+import { Post, Patch } from "../utils/api-util.js";
 const user = localStorage.getItem("user");
 const token = localStorage.getItem("token");
 const location = localStorage.getItem("location");
@@ -33,6 +33,23 @@ const AppProvider = ({ children }) => {
 
   const [state, dispatch] = useReducer(reducer, initialState);
 
+  // Update user
+
+  const updateUser = async (data) => {
+    try {
+      const response = await Patch({ data, path: "auth/updateUser" });
+      const user = response.data.user;
+      const token = response.data.token;
+      addUserToLocalStorage({ user, token });
+    } catch (error) {
+      dispatch({
+        type: SETUP_USER_ERROR,
+        payload: { msg: error.response.data.msg },
+      });
+    } finally {
+      clearAlert();
+    }
+  };
   // Register user.
   const setupUser = async ({ data, apiPath, alertMessage, isRegister }) => {
     dispatch({ type: SETUP_USER_BEGIN });
@@ -40,15 +57,14 @@ const AppProvider = ({ children }) => {
       const response = await Post({ path: apiPath, data });
       // const { user, token, location } = response.data;
       const user = response.data.user;
+      const token = response.data.token;
       dispatch({
         type: SETUP_USER_SUCCESS,
         payload: { user, alertMessage },
       });
 
-      console.log("isRegister", isRegister);
       if (isRegister === false) {
-        console.log("addUserToLocalStorage");
-        addUserToLocalStorage({ user });
+        addUserToLocalStorage({ user, token });
       }
 
       return true;
@@ -83,15 +99,14 @@ const AppProvider = ({ children }) => {
   };
 
   const toggleSidebar = () => {
-    console.log("toggleSidebar", state.showSidebar);
     dispatch({ type: TOGGLE_SIDEBAR });
   };
 
   // Add user to localStorage.
   const addUserToLocalStorage = ({ user, token, location }) => {
     localStorage.setItem("user", JSON.stringify(user));
-    localStorage.setItem("token", JSON.stringify(token));
-    localStorage.setItem("location", JSON.stringify(location));
+    localStorage.setItem("token", token);
+    localStorage.setItem("location", location);
   };
 
   // Remove user from localStorage.
@@ -110,6 +125,7 @@ const AppProvider = ({ children }) => {
         toggleSidebar,
         showSidebar: state.showSidebar,
         logoutUser,
+        updateUser,
       }}>
       {children}
     </AppContext.Provider>
