@@ -57,7 +57,6 @@ const updateUser = async (req, res) => {
   user.name = name;
   user.lastName = lastName;
   user.location = location;
-  user.role = role;
 
   await user.save();
   const token = await user.createJWT();
@@ -68,7 +67,6 @@ const updateUser = async (req, res) => {
       lastName: user.lastName,
       email: user.email,
       location: user.location,
-      role: user.role,
     },
     token,
   });
