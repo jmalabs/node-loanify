@@ -17,7 +17,6 @@ const ProtectedRoute = ({ children, scopes = [] }) => {
     return <Navigate to="/landing" />;
   }
 
-  console.log("scopes1", scopes);
   if (scopes.length > 0) {
     const permissions = PERMISSIONS[user.role];
     console.log("permissions", permissions);
