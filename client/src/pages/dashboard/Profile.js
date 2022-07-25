@@ -3,6 +3,7 @@ import { useState } from "react";
 import { FormRow, Alert } from "../../components";
 import { useAppContext } from "../../context/appContext";
 import Wrapper from "../../assets/wrappers/DashboardFormPage";
+import TextField from "@mui/material/TextField";
 
 const Profile = () => {
   const { user, showAlert, displayAlert, updateUser, isLoading } =
@@ -20,6 +21,7 @@ const Profile = () => {
       return;
     }
 
+    console.log("update: ", { name, email, lastName, location });
     await updateUser({ name, email, lastName, location });
   };
 
@@ -47,11 +49,21 @@ const Profile = () => {
             value={email}
             handleChange={(e) => setEmail(e.target.value)}
           />
-          <FormRow
+          {/* <FormRow
             type="text"
             name="location"
             value={location}
             handleChange={(e) => setLocation(e.target.value)}
+          /> */}
+          <TextField
+            id="standard-basic"
+            label="Location"
+            value={location}
+            onChange={(e) => {
+              console.log(e.target.value);
+              setLocation(e.target.value);
+            }}
+            variant="standard"
           />
           <button
             className="btn btn-primary"
