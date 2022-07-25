@@ -19,11 +19,7 @@ const ProtectedRoute = ({ children, scopes = [] }) => {
 
   if (scopes.length > 0) {
     const permissions = PERMISSIONS[user.role];
-    console.log("permissions", permissions);
-
     const permissionGranted = hasPermission({ permissions, scopes });
-    console.log("permissionGranted", permissionGranted);
-
     if (!permissionGranted) return <></>;
   }
 

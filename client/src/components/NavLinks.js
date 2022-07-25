@@ -2,7 +2,6 @@ import React from "react";
 import links from "../utils/links";
 import { NavLink } from "react-router-dom";
 import ProtectedRoute from "../pages/ProtectedRoute";
-import { SCOPES } from "../utils/permission-maps";
 
 const NavLinks = ({ toggleSidebar }) => {
   return (
@@ -10,7 +9,7 @@ const NavLinks = ({ toggleSidebar }) => {
       {links.map((link) => {
         const { text, path, id, icon, scopes } = link;
         return (
-          <ProtectedRoute scopes={scopes}>
+          <ProtectedRoute scopes={scopes} key={id}>
             <NavLink
               to={path}
               key={id}

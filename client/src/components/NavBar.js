@@ -7,7 +7,6 @@ import Logo from "./Logo";
 const NavBar = () => {
   const { toggleSidebar, user, logoutUser } = useAppContext();
   const [showLogout, setShowLogout] = useState(false);
-  console.log("NavBar", user);
   return (
     <Wrappers>
       <div className="nav-center">

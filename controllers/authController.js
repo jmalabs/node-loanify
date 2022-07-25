@@ -51,7 +51,7 @@ const updateUser = async (req, res) => {
   if (!email || !name || !lastName || !location) {
     throw new BadRequestError("Please provide all values.");
   }
-  const user = await User.findOne({ _id: req.user.userId });
+  const user = await User.findOne({ _id: req.user.userId }).populate("role");
 
   user.email = email;
   user.name = name;
@@ -67,6 +67,7 @@ const updateUser = async (req, res) => {
       lastName: user.lastName,
       email: user.email,
       location: user.location,
+      role: user.role.name,
     },
     token,
   });

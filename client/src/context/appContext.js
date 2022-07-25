@@ -1,5 +1,6 @@
 import React, { useContext, useReducer } from "react";
 import reducer from "./reducers";
+import axios from "axios";
 import {
   DISPLAY_ALERT,
   CLEAR_ALERT,
@@ -8,9 +9,12 @@ import {
   SETUP_USER_ERROR,
   TOGGLE_SIDEBAR,
   LOGOUT_USER,
+  UPDATE_USER_BEGIN,
+  UPDATE_USER_SUCCESS,
+  UPDATE_USER_ERROR,
 } from "./actions";
 
-import { Post, Patch } from "../utils/api-util.js";
+// import { server } from "../utils/api-util.js";
 const user = localStorage.getItem("user");
 const token = localStorage.getItem("token");
 const location = localStorage.getItem("location");
@@ -33,15 +37,50 @@ const AppProvider = ({ children }) => {
 
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  // Update user
+  const server = axios.create({
+    baseURL: process.env.REACT_APP_API_BASE_URL,
+  });
 
+  server.interceptors.request.use(
+    (config) => {
+      const token = localStorage.getItem("token");
+      config.headers.common["Authorization"] = `Bearer ${token}`;
+      return config;
+    },
+    (error) => {
+      return Promise.reject(error);
+    }
+  );
+
+  server.interceptors.response.use(
+    (response) => {
+      return response;
+    },
+    (error) => {
+      console.log(error.response);
+
+      if (error.response.status === 401) {
+        console.log("AUTH ERROR");
+        logoutUser();
+      }
+      return Promise.reject(error);
+    }
+  );
+
+  // Update user
   const updateUser = async (data) => {
+    dispatch({ type: UPDATE_USER_BEGIN });
     try {
-      const response = await Patch({ data, path: "auth/updateUser" });
+      const response = await server.patch("auth/updateUser", data);
       const user = response.data.user;
       const token = response.data.token;
+      dispatch({
+        type: UPDATE_USER_SUCCESS,
+        payload: { user },
+      });
       addUserToLocalStorage({ user, token });
     } catch (error) {
+      console.log(error);
       dispatch({
         type: SETUP_USER_ERROR,
         payload: { msg: error.response.data.msg },
@@ -50,11 +89,12 @@ const AppProvider = ({ children }) => {
       clearAlert();
     }
   };
+
   // Register user.
   const setupUser = async ({ data, apiPath, alertMessage, isRegister }) => {
     dispatch({ type: SETUP_USER_BEGIN });
     try {
-      const response = await Post({ path: apiPath, data });
+      const response = await server.post(apiPath, data); // Post({ path: apiPath, data });
       // const { user, token, location } = response.data;
       const user = response.data.user;
       const token = response.data.token;
