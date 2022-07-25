@@ -39,6 +39,7 @@ const UserSchema = new mongoose.Schema({
     trim: true,
     default: "My City",
   },
+  role: { type: mongoose.Types.ObjectId, ref: "Role" },
 });
 
 UserSchema.pre("save", async function () {
