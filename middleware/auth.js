@@ -12,7 +12,7 @@ const auth = (req, _, next) => {
   try {
     const token = authHeader.split(" ")[1];
     const payload = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = { userId: payload.userId };
+    req.user = { userId: payload.userId, role: payload.role };
 
     next();
   } catch (error) {

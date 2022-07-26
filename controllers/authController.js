@@ -51,8 +51,8 @@ const updateUser = async (req, res) => {
   if (!email || !name || !lastName || !location) {
     throw new BadRequestError("Please provide all values.");
   }
-  const user = await User.findOne({ _id: req.user.userId }).populate("role");
 
+  const user = await User.findOne({ _id: req.user.userId }).populate("role");
   user.email = email;
   user.name = name;
   user.lastName = lastName;
@@ -69,13 +69,30 @@ const updateUser = async (req, res) => {
       location: user.location,
       role: user.role.name,
     },
-    token,
+  });
+};
+
+const getProfile = async (req, res) => {
+  const userId = req.user.userId;
+
+  if (!userId) {
+    throw BadRequestError("Please provide User ID");
+  }
+
+  const user = await User.findOne({ _id: req.user.userId }).populate("role");
+  res.json({
+    user: {
+      name: user.name,
+      lastName: user.lastName,
+      email: user.email,
+      location: user.location,
+      role: user.role.name,
+    },
   });
 };
 
 const addRole = async (req, res) => {
   const { name, description } = req.body;
-
   const roleAlreadyExists = await Role.findOne({ name });
 
   if (roleAlreadyExists) {
@@ -85,11 +102,10 @@ const addRole = async (req, res) => {
   try {
     const role = await Role.create({ name, description });
     await role.save();
-
     res.status(StatusCodes.CREATED).send(role);
   } catch (error) {
     console.log(error);
   }
 };
 
-export { register, login, updateUser, addRole };
+export { register, login, updateUser, addRole, getProfile };
