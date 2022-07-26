@@ -1,7 +1,27 @@
 import React from "react";
+import hasRole from "../../components/hoc/WithRole";
+import Button from "../../components/Button";
+
+const AdminButton = hasRole(["ADMIN"])(Button);
 
 const AllJobs = () => {
-  return <div>AllJobs</div>;
+  return (
+    <>
+      <h3>AllJobs</h3>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+        commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
+        velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+        occaecat cupidatat non proident, sunt in culpa qui officia deserunt
+        mollit anim id est laborum.
+      </p>
+      <AdminButton className="btn btn-block" type="button" text={"Create"} />
+      <AdminButton className="btn btn-primary" type="button" text={"Delete"} />
+      <button className="btn btn-secondary">Edit</button>
+    </>
+  );
 };
 
 export default AllJobs;

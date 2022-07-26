@@ -3,7 +3,9 @@ import Wrappers from "../assets/wrappers/Navbar";
 import { FaAlignLeft, FaUserCircle, FaCaretDown } from "react-icons/fa";
 import { useAppContext } from "../context/appContext";
 import Logo from "./Logo";
+import withRole from "./hoc/WithRole";
 
+const AdminButton = withRole(["ADMIN"])(Logo);
 const NavBar = () => {
   const { toggleSidebar, user, logoutUser } = useAppContext();
   const [showLogout, setShowLogout] = useState(false);
@@ -14,7 +16,7 @@ const NavBar = () => {
           <FaAlignLeft />
         </button>
         <div>
-          <Logo />
+          <AdminButton />
           <h3 className="logo-text">dashboard</h3>
         </div>
         <div className="btn-container">

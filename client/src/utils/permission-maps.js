@@ -10,6 +10,7 @@ export const SCOPES = {
   canView: "can-view",
 };
 
+// TODO: retrieve from the server.
 export const PERMISSIONS = {
   [ROLES.user]: [SCOPES.canView],
   [ROLES.admin]: [
