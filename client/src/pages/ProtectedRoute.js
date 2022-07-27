@@ -19,6 +19,10 @@ const ProtectedRoute = ({ children, scopes = [] }) => {
 
   if (scopes.length > 0) {
     const permissions = PERMISSIONS[user.role];
+
+    if (!permissions || permissions.length === 0) {
+      return <Navigate to="/landing" />;
+    }
     const permissionGranted = hasPermission({ permissions, scopes });
     if (!permissionGranted) return <></>;
   }
