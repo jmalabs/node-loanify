@@ -71,7 +71,7 @@ const AppProvider = ({ children }) => {
   const updateUser = async (data) => {
     dispatch({ type: UPDATE_USER_BEGIN });
     try {
-      const response = await server.patch("auth/updateUser", data);
+      const response = await server.patch("auth/profile", data);
       const user = response.data.user;
       const token = response.data.token;
       dispatch({
