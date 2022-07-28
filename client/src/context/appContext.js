@@ -38,7 +38,7 @@ const AppProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const server = axios.create({
-    baseURL: process.env.REACT_APP_API_BASE_URL,
+    baseURL: "/api/v1/",
   });
 
   server.interceptors.request.use(
