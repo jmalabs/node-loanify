@@ -4,7 +4,7 @@
 
 
 # Deploying to Heroku
-- rm -rf .git
+- rm -rf .git / rmdir /S .git
 - git add .
 - git commit -m "for deployment"
 - heroku create loanify
